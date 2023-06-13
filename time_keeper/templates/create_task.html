@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name='viewport' content='width=device-width, initial-scale=1'>
 <style>
 * {
   box-sizing: border-box;
@@ -46,25 +46,26 @@ body {
 </style>
 </head>
 <body>
-<button><a href="/create_task">Создать задачу</a></button>
 
-<div class="header">
-  <h2>Список задач</h2>
+<div class='header'>
+  <h2>Создать задачу</h2>
 </div>
 
-<div class="row">
-  <div class="leftcolumn">
-    {% for task in tasks reversed %}
-      <div class="card">
-        <h3>{{task.text}}</h3>
-        <p>{{task.description}}</p>
-        <p>{{task.deadline}}</p>
-        <p>{{task.category.name}}</p>
-      </div>
-    {% endfor %}
+<div class='row'>
+  <div class='leftcolumn'>
+    <form action='/create_task' method='post'>
+      {% csrf_token %}
+      {{ form.text }}<br>
+      {{ form.description }}<br>
+      {{ form.deadline }}<br>
+      {{ form.category }}<br>
+      <span>{{ error }}</span>
+      <button type='submit'>Создать задачу</button>
+    </form>
+
+
   </div>
 </div>
-
 
 </body>
 </html>
