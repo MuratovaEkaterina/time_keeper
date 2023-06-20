@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<title>{{ title }}</title>
 <meta name='viewport' content='width=device-width, initial-scale=1'>
 <style>
 * {
@@ -48,24 +49,18 @@ body {
 <body>
 
 <div class='header'>
-  <h2>Создать задачу</h2>
+  <h2>{{ title }}</h2>
 </div>
 
 <div class='row'>
   <div class='leftcolumn'>
-    <form action='/create_task' method='post'>
+    <form method='post'>
       {% csrf_token %}
-      {{ form.text }}<br>
-      {{ form.description }}<br>
-      {{ form.deadline }}<br>
-      {{ form.category }}<br>
+      {{ form.as_p }}
       <span>{{ error }}</span>
-      <button type='submit'>Создать задачу</button>
+      <button type='submit'> Сохранить</button>
     </form>
-
-
   </div>
 </div>
-
 </body>
 </html>
