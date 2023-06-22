@@ -1,4 +1,4 @@
-from .models import Task
+from .models import Task, TaskCategory
 from django.forms import ModelForm, TextInput, Textarea, Select, DateTimeInput
 from django.core.exceptions import ValidationError
 
@@ -16,7 +16,6 @@ class TaskForm(ModelForm):
             }), 
             'description': Textarea(attrs={
                 'placeholder': 'Описание', 
-                'label': ''
             }), 
             'deadline': DateTimeInput(),
             'category': Select(attrs={
@@ -24,10 +23,22 @@ class TaskForm(ModelForm):
             }), 
         }
         
-        def clean_text(self):
-            text = self.cleaned_data['text']
-            if len(text) < 5:
-                raise ValidationError('Не указана задача')
+        # def clean_text(self):
+        #     text = self.cleaned_data['text']
+        #     if len(text) < 5:
+        #         raise ValidationError('Не указана задача')
             
-            return text
+        #     return text
       
+class CategoryForm(ModelForm):
+    
+    class Meta:
+        model = TaskCategory
+        fields = ['name', 'description']
+        widgets = {
+            'name':  TextInput(attrs={
+                'placeholder': 'Категория', 
+            }), 
+            'description': Textarea(attrs={
+                'placeholder': 'Описание', 
+            })}

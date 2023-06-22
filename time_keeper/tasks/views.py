@@ -1,17 +1,18 @@
 from typing import Any, Dict
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Task
-from .forms import TaskForm
+from .models import Task, TaskCategory
+from .forms import TaskForm, CategoryForm
 from django.views.generic import ListView, UpdateView, View
-from django.views.generic.edit import FormView
-from django.contrib import messages
+from django.views.generic.edit import FormView, CreateView
+#from django.contrib.auth.forms import UserCreationForm
 
 class Index(ListView):
     model = Task
     template_name = 'index.html'
     context_object_name = 'tasks'
     extra_context = {'title': 'Главная страница'}
+
     
 
 class CreateTask(FormView):
@@ -42,18 +43,75 @@ class DeleteTask(View):
             task = Task.objects.get(id=pk)
             task.delete()
         except:
-            return HttpResponse("Task not found", status=404)
+            return HttpResponse('Task not found', status=404)
         return redirect('/')
 
+class Category(ListView):
+    model = TaskCategory
+    template_name = 'categories.html'
+    context_object_name = 'categories'
+    extra_context = {'title': 'Главная страница'}
 
+class AddCategory(FormView):
+    form_class = CategoryForm
+    template_name = 'edit_category.html'
+    success_url = '/categories'
+    extra_context = {'title': 'Добавить категорию'}
+    
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+    
+class EditCategory(UpdateView):
+    model = TaskCategory
+    form_class = CategoryForm
+    template_name = 'edit_category.html'    
+    success_url = '/categories'
+    extra_context = {'title': 'Категории'}
+
+    def form_valid(self, form):
+        form.save()
+        return super().form_valid(form)
+
+class DeleteCategory(View):
+
+    def get(self, _, pk):
+        try:
+            category = TaskCategory.objects.get(id=pk)
+            category.delete()
+        except:
+            return HttpResponse('Category not found', status=404)
+        return redirect('/categories')
+
+# class Registration(FormView):
+#     form_class = UserCreationForm
+#     template_name = 'registration.html'
+    
     
 
 
-# def edit_task(request, pk):
-#     form = TaskForm
-#     return render(request, 'edit_task.html', {'form': form})
 
 
+# class Registration(CreateView):
+#     form_class = UserCreationForm
+#     template_name = 'registration.html'
+#     success_url = '/'
+    
+#     def get_context_data(self, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         c_def = self.get_user_context(title='Регистрация')
+#         return dict(list(context.items()) + list(c_def.items()))
+    
+
+    
+    
+    
+class Login():
+    pass
+
+
+    
+    
 # class EditTask(FormView):
 #     form_class = TaskForm
 #     template_name = 'index.html'

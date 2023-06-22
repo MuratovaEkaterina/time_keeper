@@ -57,34 +57,25 @@ body {
 <body>
 <button class='left-btn'><a href='/create_task'>Создать задачу</a></button><br>
 <button class='left-btn'><a href='/categories'>Категории</a></button>
-
-{% if user.is_authenticated %}
-<button class='right-btn'><a href='/logout'>Выйти ({{ user.username }})</a></button>
-{% else %}
-<button class='right-btn'><a href='/login'>Войти</a></button><br>
 <button class='right-btn'><a href='/registration'>Регистрация</a></button><br>
-{% endif %}
+<button class='right-btn'><a href='/login'>Войти</a></button>
 
 
 
-<div class="header">
-  <h2>Список задач</h2>
+<div class='header'>
+  <h2>Авторизация</h2>
 </div>
 
-<div class="row">
-  <div class="leftcolumn">
-    {% for task in tasks reversed %}
-      <div class="card">
-        <h3>{{task.text}}</h3>
-        <p>{{task.description}}</p>
-        <p>{{task.deadline}}</p>
-        <p>{{task.category.name}}</p>
-        <button><a href='{% url "edit_task" task.id %}'>Редактировать задачу</a></button>
-          <button><a href='{% url "delete_task" task.id %}' 
-           onclick='if (confirm("Удалить")) {return true;} else {event.stopPropagation(); event.preventDefault();}'
-        >Удалить задачу</a></button>
-      </div>
-    {% endfor %}
+<div class='row'>
+  <div class='leftcolumn'>
+    {% if form.errors %}
+    <p>{{ form.errors.error }}</p>
+    {%endif%}
+    <form  method='post'>
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type='submit'>Авторизоваться</button>
+    </form>
   </div>
 </div>
 </body>
