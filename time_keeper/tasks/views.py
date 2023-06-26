@@ -5,25 +5,39 @@ from .models import Task, TaskCategory
 from .forms import TaskForm, CategoryForm
 from django.views.generic import ListView, UpdateView, View
 from django.views.generic.edit import FormView, CreateView
-#from django.contrib.auth.forms import UserCreationForm
+from django.db.models import ProtectedError
+from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class Index(ListView):
     model = Task
     template_name = 'index.html'
     context_object_name = 'tasks'
     extra_context = {'title': 'Главная страница'}
+    
+    def get_queryset(self):
+        if not self.request.user:
+            return HttpResponse('ошибка доступа!', status=401)
+        return self.model.objects.filter(account=self.request.user.id)
 
     
 
-class CreateTask(FormView):
+class CreateTask(LoginRequiredMixin, FormView):
     form_class = TaskForm
     template_name = 'edit_task.html'
     success_url = '/'
     extra_context = {'title': 'Создать задачу'}
+    login_url = '/login'
 
     def form_valid(self, form):
-        form.save()
-        return super().form_valid(form)
+        task = form.save(commit=False)
+        task.account = self.request.user
+        task.save()
+        return redirect(self.success_url)
+    
+    # def get_initial(self) -> dict[str, Any]:
+    #     s = super().get_initial()
+    #     return s
     
 class EditTask(UpdateView):
     model = Task
@@ -79,35 +93,17 @@ class DeleteCategory(View):
         try:
             category = TaskCategory.objects.get(id=pk)
             category.delete()
-        except:
+        except TaskCategory.DoesNotExist:
             return HttpResponse('Category not found', status=404)
+        except ProtectedError as e:
+            return HttpResponse(f'Protected Category: {", ".join(map(str, e.protected_objects))}', status=400)
+        except Exception as e:
+            return HttpResponse(e, status=500)
         return redirect('/categories')
 
-# class Registration(FormView):
-#     form_class = UserCreationForm
-#     template_name = 'registration.html'
-    
-    
-
-
-
-
-# class Registration(CreateView):
-#     form_class = UserCreationForm
-#     template_name = 'registration.html'
-#     success_url = '/'
-    
-#     def get_context_data(self, object_list=None, **kwargs):
-#         context = super().get_context_data(**kwargs)
-#         c_def = self.get_user_context(title='Регистрация')
-#         return dict(list(context.items()) + list(c_def.items()))
-    
 
     
-    
-    
-class Login():
-    pass
+
 
 
     

@@ -8,7 +8,11 @@ class Task(models.Model):
     description = models.CharField(max_length=300, blank=True)
     deadline = models.DateTimeField('deadline', blank=True, null=True)
     account = models.ForeignKey('core.Account', on_delete=models.CASCADE, null=True)
-    category = models.ForeignKey('TaskCategory', on_delete=models.CASCADE, null=True)
+    category = models.ForeignKey('TaskCategory', on_delete=models.PROTECT, null=True)
+    
+    def __str__(self) -> str:
+        return f'Task({self.id}) {self.text}'
+    
 
 class TimeKeeper(models.Model):
     note_time = models.DateTimeField('to note the time', blank=True)
