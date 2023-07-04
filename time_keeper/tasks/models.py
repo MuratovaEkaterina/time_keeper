@@ -9,22 +9,33 @@ class Task(models.Model):
     deadline = models.DateTimeField('deadline', blank=True, null=True)
     account = models.ForeignKey('core.Account', on_delete=models.CASCADE, null=True)
     category = models.ForeignKey('TaskCategory', on_delete=models.PROTECT, null=True)
+    # complete = models.BooleanField('complete', )
     
     def __str__(self) -> str:
         return f'Task({self.id}) {self.text}'
+
+# class TimeKeeper(models.Model):
+#     note_time = models.DateTimeField('to note the time', blank=True)
+#     spent_time = models.DurationField('spent time', blank=True)
+#     task = models.ForeignKey('Task', on_delete=models.CASCADE, null=True)
+
     
+#     class Meta:
+#         verbose_name_plural = 'Timekeeper'
 
 class TimeKeeper(models.Model):
-    note_time = models.DateTimeField('to note the time', blank=True)
-    spent_time = models.DurationField('spent time', blank=True)
     task = models.ForeignKey('Task', on_delete=models.CASCADE, null=True)
-    
-    class Meta:
-        verbose_name_plural = 'Timekeeper'
+    # date = models.DateTimeField(auto_now_add=False, blank=True, null=True)
+    start = models.DateTimeField('start', blank=True)
+    end = models.DateTimeField('end', blank=True)
+    # spent_time = 
+
+
     
 class TaskCategory(models.Model):
     name = models.CharField(max_length=15)
     description = models.CharField(max_length=150, blank=True)
+    account = models.ForeignKey('core.Account', on_delete=models.CASCADE, null=True)
     
     def __str__(self):
         return self.name

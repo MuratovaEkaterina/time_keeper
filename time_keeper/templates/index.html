@@ -52,6 +52,7 @@ body {
   width: 120px;
 }
 
+
 </style>
 </head>
 <body>
@@ -76,6 +77,7 @@ body {
     {% for task in tasks reversed %}
       <div class="card">
         <h3>{{task.text}}</h3>
+        <p style='float: right'><b>Оставшееся время</b>: {{ task.deadline|timeuntil }}</p>
         <p>{{task.description}}</p>
         <p>{{task.deadline}}</p>
         <p>{{task.category.name}}</p>
@@ -83,7 +85,9 @@ body {
           <button><a href='{% url "delete_task" task.id %}' 
            onclick='if (confirm("Удалить")) {return true;} else {event.stopPropagation(); event.preventDefault();}'
         >Удалить задачу</a></button>
+
       </div>
+
     {% endfor %}
   </div>
 </div>

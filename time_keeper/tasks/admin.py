@@ -1,22 +1,6 @@
 from django.contrib import admin
-# from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-# from django.contrib.auth.models import User
-from .models import Task, TimeKeeper, TaskCategory #, Authorization, Profile
-
-# class ProfileInLine(admin.StackedInline):
-#     model = Profile
-#     can_delete = False
-#     verbose_name_plural = 'profile'
-    
-# class UserAdmin(BaseUserAdmin):
-#     inlines = (ProfileInLine,)
-
-# admin.site.unregister(User)
-# admin.site.register(User, UserAdmin)
+from .models import Task, TaskCategory #  TimeKeeper
 
 admin.site.register(Task)
-# admin.site.register(Nontification)
-admin.site.register(TimeKeeper)
-# admin.site.register(Authorization)
-# Register your models here.
+#admin.site.register(TimeKeeper)
 admin.site.register(TaskCategory)
