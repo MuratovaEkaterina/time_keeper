@@ -81,10 +81,16 @@ body {
         <p>{{task.description}}</p>
         <p>{{task.deadline}}</p>
         <p>{{task.category.name}}</p>
+        <p>{{task.spent_time}}</p>
         <button><a href='{% url "edit_task" task.id %}'>Редактировать задачу</a></button>
           <button><a href='{% url "delete_task" task.id %}' 
            onclick='if (confirm("Удалить")) {return true;} else {event.stopPropagation(); event.preventDefault();}'
         >Удалить задачу</a></button>
+        {% if  task.started %}
+        <button class='right-btn'><a href=''>End</a></button>
+        {% else %}
+        <button class='right-btn'><a href='{% url "start_task" task.id %}'>Start</a></button>
+        {% endif %}
 
       </div>
 

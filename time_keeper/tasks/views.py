@@ -7,6 +7,8 @@ from django.views.generic import ListView, UpdateView, View
 from django.views.generic.edit import FormView, CreateView
 from django.db.models import ProtectedError
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils import timezone
+
 
 class Index(LoginRequiredMixin, ListView):
     model = Task
@@ -29,7 +31,7 @@ class CreateTask(LoginRequiredMixin, FormView):
 
     def form_valid(self, form):
         task = form.save(commit=False)
-        # task.account = self.request.user
+        task.account = self.request.user
         task.save()
         return redirect(self.success_url)
     
@@ -131,17 +133,67 @@ class DeleteCategory(LoginRequiredMixin, View):
         return redirect('/categories')
 
 
-# class EditTask(FormView):
-#     form_class = TaskForm
-#     template_name = 'index.html'
-#     success_url = '/'
-    
-#     def get_initial(self):
-#         initial = super().get_initial()
-#         id = self.kwargs.get('id')
+class Start(LoginRequiredMixin, View):
+    login_url = '/login'
+    def get(self, _, pk):
+        try:
+            task = Task.objects.get(id=pk, account=self.request.user.id)                
+        except TaskCategory.DoesNotExist:
+            return HttpResponse('Task not found', status=404)
+        except Exception as e:
+            return HttpResponse(e, status=500)
+        if not task.started:
+            timekeeper = TimeKeeper(task=task, start=timezone.now())
+            try:
+                timekeeper.save()
+            except Exception as e:
+                return HttpResponse(e, status=500)
+        return redirect('/')
         
-#         return initial
+            
+    model = TimeKeeper
+    template_name = 'index.html'
+    context_object_name = 'start'
     
-#     def form_valid(self, form):
-#         form.save()
-#         return super().form_valid(form)
+    @property
+    def start(self):
+        return self.start
+    
+    
+class End(ListView):
+    model = TimeKeeper
+    template_name = 'index.html'
+    context_object_name = 'end'
+    
+    def set_end(self):
+        self.end = timezone.now()
+
+    def get_end(self):
+        return self.end
+    
+    start = property(get_end, set_end)
+    
+    
+    
+# class SpentTime():
+#     model = TimeKeeper
+#     def set_start(self):
+#         self.start = timezone.now()
+
+#     def get_start(self):
+#         return self.start
+    
+#     start = property(get_start, set_start)
+    
+#     def set_end(self):
+#         self.end = timezone.now()
+
+#     def get_end(self):
+#         return self.end
+    
+#     end = property(get_end, set_end)
+    
+
+
+# def spent_time(request):
+#     return render(request, 'index.html', TimeKeeper.end - TimeKeeper.start)
