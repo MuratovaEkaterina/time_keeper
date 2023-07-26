@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>{{title}}</title>
+<meta name='viewport' content='width=device-width, initial-scale=1'>
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial;
+  padding: 20px;
+  background: #f1f1f1;
+}
+
+.header {
+  padding: 2px;
+  font-size: 40px;
+  text-align: center;
+  background: white;
+}
+
+.leftcolumn {   
+  float: left;
+  width: 100%;
+}
+
+.card {
+   background-color: white;
+   padding: 20px;
+   margin-top: 20px;
+}
+
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+@media screen and (max-width: 800px) {
+  .leftcolumn, .rightcolumn {   
+    width: 100%;
+    padding: 0;
+  }
+}
+.right-btn {
+  float: right;
+  width: 100px;
+}
+.left-btn {
+  width: 120px;
+}
+
+</style>
+</head>
+<body>
+<button class='left-btn'><a href='/create_task'>Создать задачу</a></button><br>
+<button class='left-btn'><a href='/categories'>Категории</a></button>
+<button class='right-btn'><a href='/registration'>Регистрация</a></button><br>
+<button class='right-btn'><a href='/login'>Войти</a></button>
+
+<div class='header'>
+  <h2>Регистрация</h2>
+</div>
+<div class='row'>
+  <div class='leftcolumn'>
+    <form action='registration' method='post'>
+        {{ form.as_p }}
+        {% csrf_token %}
+        <button type='submit'>Зарегистрироваться</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>
